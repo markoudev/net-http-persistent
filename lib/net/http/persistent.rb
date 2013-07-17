@@ -963,6 +963,8 @@ class Net::HTTP::Persistent
     connection = connection_for uri
     connection_id = connection.object_id
 
+    Rails.logger.info "[net-http-persistent] thread #{Thread.current.object_id} connection #{connection.object_id} request #{req.object_id} uri #{uri}"
+
     begin
       Thread.current[@request_key][connection_id] += 1
       response = connection.request req, &block
@@ -1003,6 +1005,8 @@ class Net::HTTP::Persistent
     end
 
     @http_versions["#{uri.host}:#{uri.port}"] ||= response.http_version
+
+    Rails.logger.info "[net-http-persistent] thread #{Thread.current.object_id} connection #{connection.object_id} request #{req.object_id} uri #{uri}"
 
     response
   end
